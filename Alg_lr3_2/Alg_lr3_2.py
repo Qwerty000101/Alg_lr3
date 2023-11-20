@@ -38,7 +38,7 @@ array_of_search_time_bad = []
 amount_of_elements = []
 array_of_search_time_avr = []
 for i in range(1,1001):
-    arr=[0 for i in range(0,i)]
+    arr = [0 for i in range(0,i)]
     amount_of_elements.append(i)
     for j in range(0,len(arr)):
         arr[j] = random.randint(500,1000)
@@ -93,7 +93,7 @@ second_mt_avr = np.array([[sum_of_sqr_amt_of_el, sum_mltp_amt_time_avr],
 second_det_avr = np.linalg.det(second_mt_avr)
 first_coefficient_avr = first_det_avr/det_avr
 second_coefficient_avr = second_det_avr/det_avr
-func_average=[]
+func_average = []
 for i in range(1,1001):
     func_average.append(first_coefficient_avr*i +
                         second_coefficient_avr)
