@@ -1,125 +1,121 @@
-﻿import random
+﻿#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+import random
 import numpy as np
 import timeit
-from statistics import correlation
 import matplotlib.pyplot as plt
 from math import sqrt
-def corr(arrX,arrY):
-    sigma1=0
-    sigma2=0
-    sigma3=0
-    xSred=0
-    ySred=0
-    sumX=0
-    sumY=0
-    for i in range(len(arrX)):
-        sumX+=arrX[i]
-        sumY+=arrY[i]
-    xSred=sumX/len(arrX)
-    ySred=sumY/len(arrY)
-    for i in range(len(arrX)):
-        sigma1+=(arrX[i]-xSred)*(arrY[i]-ySred)
-        sigma2+=(arrX[i]-xSred)**2
-        sigma3+=(arrY[i]-ySred)**2
-    return sigma1/(sqrt(sigma2)*sqrt(sigma3))
-def poisk(arr,element):
-    zn=0
-    #print()
-    for i in range(0,len(arr)):
-        if arr[i]==element:
-            #print("Элемент найден")
-            zn=1
-            #print()
+def correlation(array_of_values_x,array_of_values_y):
+    sigma_first = 0
+    sigma_second = 0
+    sigma_third = 0
+    average_value_x = 0
+    average_value_y = 0
+    sum_x = 0
+    sum_y = 0
+
+    for i in range(len(array_of_values_x)):
+        sum_x += array_of_values_x[i]
+        sum_y += array_of_values_y[i]
+    average_value_x = sum_x/len(array_of_values_x)
+    average_value_y = sum_y/len(array_of_values_y)
+
+    for i in range(len(array_of_values_x)):
+        sigma_first += ((array_of_values_x[i] - average_value_x)*
+                        (array_of_values_y[i] - average_value_y))
+        sigma_second += (array_of_values_x[i]-average_value_x)**2
+        sigma_third += (array_of_values_y[i]-average_value_y)**2
+
+    pair_correlation_coefficient = (sigma_first/(sqrt(sigma_second)*
+                                                 sqrt(sigma_third)))
+    return pair_correlation_coefficient
+def linear_search(array,element):
+    for i in range(0,len(array)):
+        if array[i] == element:
             return 1
-            break
-    if zn==0:
-        #print("Элемент не найден")
-        #print()
-        return 0
-zn=0
-arrTime=[]
-x=[]
-arrTimeBad=[]
+    return 0
+array_of_search_time_bad = []
+amount_of_elements = []
+array_of_search_time_avr = []
 for i in range(1,1001):
-    arr2=[0 for i in range(0,i)]
-    x.append(i)
-    for j in range(0,len(arr2)):
-        arr2[j]= random.randint(500,1000)
-        #print(arr2[j],end=" ")
-    poisk(arr2,1)
-    timePoisk=(timeit.timeit(lambda: poisk(arr2,1), number=50))/50
-    print()
-    print("Время поиска в массиве из ",i," элементов в худшем случае: ",timePoisk)
-    arrTime.append(timePoisk)
-    timePoisk=(timeit.timeit(lambda: poisk(arr2,arr2[round(len(arr2)/2)]), number=50))/50
-    print()
-    print("Время поиска в массиве из ",i," элементов в среднем случае: ",timePoisk)
-    arrTimeBad.append(timePoisk)
-    print()
-sumArrTime=sum(arrTime)
-sumX=sum(x)
-kvSumX=0
-sumUmnXY=0
-bn=5
-for i in x:
-    kvSumX+=i*i
-for i in range(0,len(arrTime)):
-    sumUmnXY+=x[i]*arrTime[i]
-#print("Сумма ",sumArrTime,sumX, kvSumX,sumUmnXY)
-matrix = np.array([[kvSumX, sumX],
-                   [sumX, bn]])
-det = np.linalg.det(matrix)
-#print("Определитель = ",det)
-matrix1Kramer = np.array([[sumUmnXY, sumX],
-                           [sumArrTime, bn]])
-det1=np.linalg.det(matrix1Kramer)
-matrix2Kramer = np.array([[kvSumX, sumUmnXY],
-                           [sumX, sumArrTime]])
-det2=np.linalg.det(matrix2Kramer)
-koef1=det1/det
-koef2=det2/det
-#print("y=",koef1,"x+",koef2)
-func=[]
+    arr=[0 for i in range(0,i)]
+    amount_of_elements.append(i)
+    for j in range(0,len(arr)):
+        arr[j] = random.randint(500,1000)
+    linear_search(arr,1)
+    search_time = (timeit.timeit(lambda: linear_search(arr,1), number=50))/50
+    print("Время поиска в массиве из ",i,
+          " элементов в худшем случае: ", search_time)
+    array_of_search_time_bad.append(search_time)
+    search_time=(timeit.timeit(lambda: linear_search(
+        arr,arr[round(len(arr)/2)]), number=50))/50
+    print("Время поиска в массиве из ",i,
+          " элементов в среднем случае: ",search_time,"\n")
+    array_of_search_time_avr.append(search_time)
+sum_search_time_bad=sum(array_of_search_time_bad)
+sum_amt_of_el=sum(amount_of_elements)
+sum_of_sqr_amt_of_el=0 
+sum_mltp_amt_time=0
+bn=len(amount_of_elements)
+
+for i in amount_of_elements:
+    sum_of_sqr_amt_of_el+=i*i
+
+for i in range(0,len(array_of_search_time_bad)):
+    sum_mltp_amt_time+=amount_of_elements[i]*array_of_search_time_bad[i]
+matrix_bad = np.array([[sum_of_sqr_amt_of_el, sum_amt_of_el],
+                       [sum_amt_of_el, bn]])
+det_bad = np.linalg.det(matrix_bad)
+first_mt_bad = np.array([[sum_mltp_amt_time, sum_amt_of_el],
+                         [sum_search_time_bad, bn]])
+first_det_bad=np.linalg.det(first_mt_bad)
+second_mt_bad = np.array([[sum_of_sqr_amt_of_el, sum_mltp_amt_time],
+                          [sum_amt_of_el, sum_search_time_bad]])
+second_det_bad=np.linalg.det(second_mt_bad)
+first_coefficient_bad=first_det_bad/det_bad
+second_coefficient_bad=second_det_bad/det_bad
+func_bad=[]
 for i in range(1,1001):
-    func.append(koef1*(i)+koef2)
-#Sredniy sluchai
-sumArrTimeBad=sum(arrTimeBad)
-sumUmnXYBad=0
-for i in range(0,len(arrTime)):
-    sumUmnXYBad+=x[i]*arrTimeBad[i]
-matrixBad = np.array([[kvSumX, sumX],
-                   [sumX, bn]])
-detBad = np.linalg.det(matrix)
-#print("Определитель = ",det)
-matrix1KramerBad = np.array([[sumUmnXYBad, sumX],
-                           [sumArrTimeBad, bn]])
-det1Bad=np.linalg.det(matrix1KramerBad)
-matrix2KramerBad = np.array([[kvSumX, sumUmnXYBad],
-                           [sumX, sumArrTimeBad]])
-det2Bad=np.linalg.det(matrix2KramerBad)
-koef1Bad=det1Bad/detBad
-koef2Bad=det2Bad/detBad
-#print("y=",koef1Bad,"x+",koef2Bad)
-funcBad=[]
+    func_bad.append(first_coefficient_bad*(i)+second_coefficient_bad)
+sum_search_time_avr = sum(array_of_search_time_avr)
+sum_mltp_amt_time_avr = 0
+
+for i in range(0,len(array_of_search_time_bad)):
+    sum_mltp_amt_time_avr+=amount_of_elements[i]*array_of_search_time_avr[i]
+matrix_avr = np.array([[sum_of_sqr_amt_of_el, sum_amt_of_el],
+                       [sum_amt_of_el, bn]])
+det_avr = np.linalg.det(matrix_avr)
+first_mt_avr = np.array([[
+    sum_mltp_amt_time_avr, sum_amt_of_el],
+   [sum_search_time_avr, bn]])
+first_det_avr = np.linalg.det(first_mt_avr)
+second_mt_avr = np.array([[sum_of_sqr_amt_of_el, sum_mltp_amt_time_avr],
+                          [sum_amt_of_el, sum_search_time_avr]])
+second_det_avr = np.linalg.det(second_mt_avr)
+first_coefficient_avr = first_det_avr/det_avr
+second_coefficient_avr = second_det_avr/det_avr
+func_average=[]
 for i in range(1,1001):
-    funcBad.append(koef1Bad*(i)+koef2Bad)
+    func_average.append(first_coefficient_avr*i +
+                        second_coefficient_avr)
 plt.figure(figsize=(8,6))
 plt.figure(1)
 plt.title("Время поиска элемента в худшем случае")
-plt.plot(x,func,color='red',linewidth=4)
-plt.scatter(x, arrTime,s=3)
-plt.xlabel('Размер массива\n Коэффициент парной корреляции равен:'+str(corr(x,arrTime)))
-plt.legend(['y='+str(koef1)+"x+("+str(koef2)+")"])
+plt.plot(amount_of_elements,func_bad,color='red',linewidth=4)
+plt.scatter(amount_of_elements, array_of_search_time_bad,s=3)
+plt.xlabel('Размер массива\n Коэффициент парной корреляции равен:'+
+           str(correlation(amount_of_elements,array_of_search_time_bad)))
+plt.legend(['y='+str(first_coefficient_bad)+"x+("+
+            str(second_coefficient_bad)+")"])
 plt.ylabel("Время поиска элемента в массиве")
 plt.figure(figsize=(8,6))
 plt.figure(2)
 plt.title("Время поиска элемента в среднем случае")
-plt.plot(x,funcBad,color='red',linewidth=4)
-plt.scatter(x,arrTimeBad,s=3)
-plt.xlabel('Размер массива\n Коэффициент парной корреляции равен:'+str(corr(x,arrTimeBad)))
-plt.legend(['y='+str(koef1Bad)+"x+("+str(koef2Bad)+")"])
+plt.plot(amount_of_elements,func_average,color='red',linewidth=4)
+plt.scatter(amount_of_elements,array_of_search_time_avr,s=3)
+plt.xlabel('Размер массива\n Коэффициент парной корреляции равен:'+
+           str(correlation(amount_of_elements,array_of_search_time_avr)))
+plt.legend(['y='+str(first_coefficient_avr)+"x+("+
+            str(second_coefficient_avr)+")"])
 plt.ylabel("Время поиска элемента в массиве")
 plt.show()
-#print(correlation(x,arrTime))
-#print("Результат работы функции: ",corr(x,arrTime))
-#print("Результат работы функции: ",corr(x,arrTimeBad))
