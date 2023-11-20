@@ -52,17 +52,17 @@ for i in range(1,1001):
     print("Время поиска в массиве из ",i,
           " элементов в среднем случае: ",search_time,"\n")
     array_of_search_time_avr.append(search_time)
-sum_search_time_bad=sum(array_of_search_time_bad)
-sum_amt_of_el=sum(amount_of_elements)
-sum_of_sqr_amt_of_el=0 
-sum_mltp_amt_time=0
-bn=len(amount_of_elements)
+sum_search_time_bad = sum(array_of_search_time_bad)
+sum_amt_of_el = sum(amount_of_elements)
+sum_of_sqr_amt_of_el = 0 
+sum_mltp_amt_time = 0
+bn = len(amount_of_elements)
 
 for i in amount_of_elements:
-    sum_of_sqr_amt_of_el+=i*i
+    sum_of_sqr_amt_of_el += i*i
 
 for i in range(0,len(array_of_search_time_bad)):
-    sum_mltp_amt_time+=amount_of_elements[i]*array_of_search_time_bad[i]
+    sum_mltp_amt_time += amount_of_elements[i]*array_of_search_time_bad[i]
 matrix_bad = np.array([[sum_of_sqr_amt_of_el, sum_amt_of_el],
                        [sum_amt_of_el, bn]])
 det_bad = np.linalg.det(matrix_bad)
@@ -71,23 +71,22 @@ first_mt_bad = np.array([[sum_mltp_amt_time, sum_amt_of_el],
 first_det_bad=np.linalg.det(first_mt_bad)
 second_mt_bad = np.array([[sum_of_sqr_amt_of_el, sum_mltp_amt_time],
                           [sum_amt_of_el, sum_search_time_bad]])
-second_det_bad=np.linalg.det(second_mt_bad)
+second_det_bad = np.linalg.det(second_mt_bad)
 first_coefficient_bad=first_det_bad/det_bad
-second_coefficient_bad=second_det_bad/det_bad
-func_bad=[]
+second_coefficient_bad = second_det_bad/det_bad
+func_bad = []
 for i in range(1,1001):
     func_bad.append(first_coefficient_bad*(i)+second_coefficient_bad)
 sum_search_time_avr = sum(array_of_search_time_avr)
 sum_mltp_amt_time_avr = 0
 
 for i in range(0,len(array_of_search_time_bad)):
-    sum_mltp_amt_time_avr+=amount_of_elements[i]*array_of_search_time_avr[i]
+    sum_mltp_amt_time_avr += amount_of_elements[i]*array_of_search_time_avr[i]
 matrix_avr = np.array([[sum_of_sqr_amt_of_el, sum_amt_of_el],
                        [sum_amt_of_el, bn]])
 det_avr = np.linalg.det(matrix_avr)
-first_mt_avr = np.array([[
-    sum_mltp_amt_time_avr, sum_amt_of_el],
-   [sum_search_time_avr, bn]])
+first_mt_avr = np.array([[sum_mltp_amt_time_avr, sum_amt_of_el],
+                         [sum_search_time_avr, bn]])
 first_det_avr = np.linalg.det(first_mt_avr)
 second_mt_avr = np.array([[sum_of_sqr_amt_of_el, sum_mltp_amt_time_avr],
                           [sum_amt_of_el, sum_search_time_avr]])
